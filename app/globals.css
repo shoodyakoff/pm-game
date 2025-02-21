@@ -1,0 +1,43 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 255, 255, 255;
+  --background-rgb: 17, 24, 39;
+}
+
+@layer base {
+  html {
+    @apply bg-gray-900;
+  }
+  
+  body {
+    @apply text-white min-h-screen;
+    color: rgb(var(--foreground-rgb));
+    background: rgb(var(--background-rgb));
+  }
+
+  /* Убираем подчеркивания и стандартные стили */
+  a {
+    @apply no-underline;
+  }
+
+  * {
+    @apply box-border;
+  }
+
+  /* Сброс стилей для кнопок */
+  button {
+    @apply bg-transparent border-none cursor-pointer p-0 m-0;
+  }
+
+  /* Стили для перетаскиваемых элементов */
+  [draggable] {
+    @apply cursor-grab;
+  }
+
+  [draggable]:active {
+    @apply cursor-grabbing;
+  }
+}
