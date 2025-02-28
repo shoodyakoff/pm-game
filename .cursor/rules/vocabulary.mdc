@@ -1,0 +1,4 @@
+---
+description: Rules for project terminology and common commands used in development
+globs: *.{tsx,ts,md}
+---

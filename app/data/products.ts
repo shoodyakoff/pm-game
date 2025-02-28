@@ -2,19 +2,23 @@ import { Product } from "../types/game";
 
 export const products: Product[] = [
   {
-    id: "foodshare",
+    id: 'foodshare',
     title: "FoodShare",
     description: "Приложение для обмена домашней едой между соседями",
+    image: "/images/apps/foodshare-app.png",
     features: [
       "Публикация излишков приготовленной еды",
       "Система рейтинга поваров",
-      "Чат для общения с соседями"
+      "Чат для общения с соседями",
+      "Календарь домашних обедов",
+      "Простые платежи между пользователями"
     ]
   },
   {
-    id: "petcare",
+    id: 'petcare',
     title: "PetCare",
     description: "Приложение для заботы о домашних животных",
+    image: "/images/apps/petcare-app.png",
     features: [
       "Дневник питания и здоровья питомца",
       "Поиск ветеринаров поблизости",
@@ -24,9 +28,10 @@ export const products: Product[] = [
     ]
   },
   {
-    id: "sportbuddy",
+    id: 'sportbuddy',
     title: "SportBuddy",
     description: "Приложение для поиска партнеров по спорту",
+    image: "/images/apps/sportbuddy-app.png",
     features: [
       "Поиск людей для совместных тренировок",
       "Организация любительских матчей",

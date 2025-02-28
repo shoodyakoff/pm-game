@@ -1,4 +1,5 @@
 import { Character } from '../types/game';
+import { PMCharacter } from '../components/character/CharacterSelect';
 
 export const characters: Character[] = [
   {
@@ -76,4 +77,19 @@ export const characters: Character[] = [
       technical: 95
     }
   }
+];
+
+export const PM_CHARACTERS: PMCharacter[] = [
+  {
+    id: 'po',
+    type: 'Product Owner',
+    name: 'Product Owner',
+    stats: {
+      technical: 60,
+      soft: 80,
+      leadership: 85,
+      analytics: 70
+    }
+  },
+  // Остальные типы PM...
 ];

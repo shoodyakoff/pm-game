@@ -1,0 +1,5 @@
+---
+description: TypeScript and React development rules
+globs: globs: **/*.{ts,tsx}
+---
+ 

@@ -1,0 +1,23 @@
+---
+description: Rules for documentation and technical writing
+globs: **/*.md, .ai/**/*.md, .cursor/rules/*.mdc
+---
+
+# Documentation Rules
+
+## General Guidelines
+- Follow Google's Technical Writing Style Guide
+- Use present tense and active voice
+- Write clearly and concisely
+- Define terminology when needed
+
+## Structure
+- Use proper headers (H1 -> H4)
+- Keep content focused
+- Use lists and tables
+- Add diagrams when helpful
+
+## File Types
+- PRD: Project goals and requirements
+- Stories: Tasks and progress
+- Technical: Code and implementation

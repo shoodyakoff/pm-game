@@ -13,12 +13,17 @@ const CharacterSelection: FC<CharacterSelectionProps> = ({ onSelect }) => {
   const [selectedCharacter, setSelectedCharacter] = useState<Character | null>(null);
   const [customName, setCustomName] = useState('');
 
+  const handleSelect = (character: Character) => {
+    console.log('Selecting character:', character);
+    onSelect({
+      ...character,
+      customName: customName.trim()
+    });
+  };
+
   const handleSubmit = () => {
     if (selectedCharacter && customName.trim()) {
-      onSelect({
-        ...selectedCharacter,
-        customName: customName.trim()
-      });
+      handleSelect(selectedCharacter);
     }
   };
 

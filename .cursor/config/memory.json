@@ -1,0 +1,12 @@
+{
+  "contextRetention": {
+    "stories": "2 weeks",
+    "decisions": "permanent",
+    "vocabulary": "permanent"
+  },
+  "priorities": {
+    "current_story": "high",
+    "prd": "high",
+    "technical_decisions": "medium"
+  }
+} 

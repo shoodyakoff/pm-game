@@ -1,0 +1,10 @@
+.test-only {
+  display: none;
+}
+
+/* В тестовом окружении */
+@media (test-env) {
+  .test-only {
+    display: block;
+  }
+} 
