@@ -1,4 +1,5 @@
-require('@testing-library/jest-dom');
+// Импортируем расширения для Jest
+import '@testing-library/jest-dom';
 
 const { testEventEmitter } = require('./app/testing/test-utils/EventEmitter');
 
@@ -61,4 +62,55 @@ beforeAll(() => {
   document.dispatchEvent = jest.fn((event) => {
     return originalDispatchEvent.call(document, event);
   });
-}); 
+});
+
+// Мок для window.matchMedia
+Object.defineProperty(window, 'matchMedia', {
+  writable: true,
+  value: jest.fn().mockImplementation(query => ({
+    matches: false,
+    media: query,
+    onchange: null,
+    addListener: jest.fn(), // устаревший
+    removeListener: jest.fn(), // устаревший
+    addEventListener: jest.fn(),
+    removeEventListener: jest.fn(),
+    dispatchEvent: jest.fn(),
+  })),
+});
+
+// Мок для IntersectionObserver
+class MockIntersectionObserver {
+  constructor(callback) {
+    this.callback = callback;
+  }
+  observe() { return null; }
+  unobserve() { return null; }
+  disconnect() { return null; }
+}
+
+Object.defineProperty(window, 'IntersectionObserver', {
+  writable: true,
+  value: MockIntersectionObserver,
+});
+
+// Подавление консольных предупреждений в тестах
+const originalConsoleError = console.error;
+const originalConsoleWarn = console.warn;
+
+console.error = (...args) => {
+  if (
+    /Warning.*not wrapped in act/i.test(args[0]) ||
+    /Warning.*ReactDOM.render is no longer supported/i.test(args[0])
+  ) {
+    return;
+  }
+  originalConsoleError(...args);
+};
+
+console.warn = (...args) => {
+  if (/Warning.*not wrapped in act/i.test(args[0])) {
+    return;
+  }
+  originalConsoleWarn(...args);
+}; 

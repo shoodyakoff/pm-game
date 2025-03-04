@@ -1,132 +1,118 @@
 'use client';
 
-import { FC, useState } from 'react';
+import React, { FC, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Character } from '../../types/game';
-import { characters } from '../../data/characters';
+import { Character } from '@/types/character';
+import { characters } from '@/data/characters';
 
 interface CharacterSelectionProps {
-  onSelect: (character: Character & { customName: string }) => void;
+  onCharacterSelect: (character: Character) => void;
 }
 
-const CharacterSelection: FC<CharacterSelectionProps> = ({ onSelect }) => {
+const CharacterSelection: FC<CharacterSelectionProps> = ({ onCharacterSelect }) => {
   const [selectedCharacter, setSelectedCharacter] = useState<Character | null>(null);
-  const [customName, setCustomName] = useState('');
 
-  const handleSelect = (character: Character) => {
-    console.log('Selecting character:', character);
-    onSelect({
-      ...character,
-      customName: customName.trim()
-    });
+  const handleCharacterClick = (character: Character) => {
+    setSelectedCharacter(character);
   };
 
-  const handleSubmit = () => {
-    if (selectedCharacter && customName.trim()) {
-      handleSelect(selectedCharacter);
+  const handleSelectButtonClick = () => {
+    if (selectedCharacter) {
+      onCharacterSelect(selectedCharacter);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 p-8">
-      <h1 className="text-4xl font-bold text-center mb-12 bg-gradient-to-r from-blue-400 to-purple-500 text-transparent bg-clip-text">
-        Выберите своего Product Manager
-      </h1>
+    <div className="min-h-screen bg-gray-900 flex flex-col items-center justify-center p-2">
+      <h1 className="text-3xl font-bold text-white mb-8">Выберите персонажа</h1>
       
-      <div className="grid grid-cols-5 gap-6 mb-8">
-        {characters.map((char) => (
-          <motion.button
-            key={char.name}
+      <div className="grid grid-cols-5 gap-4 max-w-6xl mb-8">
+        {characters.map((character) => (
+          <motion.div
+            key={character.id}
+            className={`bg-gray-800 rounded-xl p-4 shadow-lg flex flex-col items-center cursor-pointer transition-colors flex-shrink-0 w-64
+              ${selectedCharacter?.id === character.id ? 'ring-2 ring-blue-500 bg-gray-700' : 'hover:bg-gray-700'}`}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className={`group relative p-6 rounded-xl transition-all duration-300
-              ${selectedCharacter?.id === char.id 
-                ? 'bg-gradient-to-br from-blue-500/30 to-purple-500/30 border-2 border-blue-400' 
-                : 'bg-gray-800/50 hover:bg-gray-800/80'}`}
-            onClick={() => setSelectedCharacter(char)}
+            onClick={() => handleCharacterClick(character)}
           >
             <img 
-              src={char.icon}
-              alt={char.name} 
+              src={character.image} 
+              alt={character.displayName} 
               className="w-full h-48 object-contain mb-4"
             />
-            <h3 className="text-xl font-bold mb-2">{char.name}</h3>
-            <div className="space-y-2">
-              <p className="text-sm text-gray-400">{char.type}</p>
-              <div className="flex items-center gap-2">
-                <span className={`px-2 py-1 rounded text-xs ${
-                  char.difficulty === "Легко" ? "bg-green-500/20 text-green-400" :
-                  char.difficulty === "Нормально" ? "bg-yellow-500/20 text-yellow-400" :
-                  "bg-red-500/20 text-red-400"
-                }`}>
-                  {char.difficulty}
-                </span>
-              </div>
-            </div>
-          </motion.button>
+            <h2 className="text-xl font-bold text-white">{character.displayName}</h2>
+            <p className="text-gray-400 text-center">{character.roleTitle}</p>
+          </motion.div>
         ))}
       </div>
 
       {selectedCharacter && (
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="bg-gray-800/50 rounded-xl p-6 max-w-2xl mx-auto backdrop-blur-sm"
-        >
-          <h2 className="text-2xl font-bold mb-4">{selectedCharacter.name}</h2>
-          <p className="text-gray-300 mb-4">{selectedCharacter.description}</p>
-          
-          <div className="grid grid-cols-3 gap-4 mb-4">
-            {Object.entries(selectedCharacter.stats).map(([stat, value]) => (
-              <div key={stat} className="space-y-2">
-                <p className="text-sm text-gray-400 capitalize">{stat}</p>
-                <motion.div 
-                  className="h-2 bg-gray-700 rounded-full overflow-hidden"
-                  initial={{ width: 0 }}
-                  animate={{ width: "100%" }}
-                >
-                  <motion.div 
-                    className="h-full bg-gradient-to-r from-blue-500 to-purple-500"
-                    initial={{ width: 0 }}
-                    animate={{ width: `${value}%` }}
-                    transition={{ delay: 0.2 }}
-                  />
-                </motion.div>
+        <div className="bg-gray-800 rounded-xl p-6 max-w-3xl w-full mb-8">
+          <div className="flex flex-col md:flex-row gap-6">
+            <div className="md:w-1/3">
+              <img 
+                src={selectedCharacter.image} 
+                alt={selectedCharacter.displayName} 
+                className="w-full h-auto object-contain"
+              />
+            </div>
+            <div className="md:w-2/3">
+              <h2 className="text-2xl font-bold text-white mb-2">{selectedCharacter.displayName}</h2>
+              <p className="text-gray-300 mb-4">{selectedCharacter.description}</p>
+              
+              <div className="mb-4">
+                <p className="text-gray-400 mb-1">Сложность: <span className="text-white">{selectedCharacter.difficulty}</span></p>
               </div>
-            ))}
-          </div>
-
-          <div className="flex justify-between items-center">
-            <div>
-              <p className="text-sm text-gray-400">Оружие</p>
-              <p className="text-gray-300">{selectedCharacter.weapon}</p>
+              
+              <div className="space-y-2 mb-6">
+                <div>
+                  <div className="flex justify-between mb-1">
+                    <span className="text-gray-300">Влияние на бизнес</span>
+                    <span className="text-white">{selectedCharacter.stats?.impact}</span>
+                  </div>
+                  <div className="w-full bg-gray-700 rounded-full h-2">
+                    <div className="bg-blue-500 h-2 rounded-full" style={{ width: `${selectedCharacter.stats?.impact}%` }}></div>
+                  </div>
+                </div>
+                
+                <div>
+                  <div className="flex justify-between mb-1">
+                    <span className="text-gray-300">Лидерские качества</span>
+                    <span className="text-white">{selectedCharacter.stats?.leadership}</span>
+                  </div>
+                  <div className="w-full bg-gray-700 rounded-full h-2">
+                    <div className="bg-green-500 h-2 rounded-full" style={{ width: `${selectedCharacter.stats?.leadership}%` }}></div>
+                  </div>
+                </div>
+                
+                <div>
+                  <div className="flex justify-between mb-1">
+                    <span className="text-gray-300">Технические навыки</span>
+                    <span className="text-white">{selectedCharacter.stats?.technical}</span>
+                  </div>
+                  <div className="w-full bg-gray-700 rounded-full h-2">
+                    <div className="bg-purple-500 h-2 rounded-full" style={{ width: `${selectedCharacter.stats?.technical}%` }}></div>
+                  </div>
+                </div>
+              </div>
+              
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition-colors w-full"
+                onClick={handleSelectButtonClick}
+              >
+                Выбрать
+              </motion.button>
             </div>
           </div>
-        </motion.div>
+        </div>
       )}
-
-      <div className="mt-8 flex justify-center gap-4">
-        <input
-          type="text"
-          value={customName}
-          onChange={(e) => setCustomName(e.target.value)}
-          placeholder="Введите имя персонажа"
-          className="w-64 px-6 py-3 bg-gray-800/50 rounded-lg border border-gray-700 
-            text-white placeholder-gray-500 focus:outline-none focus:border-blue-500"
-        />
-        
-        <button
-          onClick={handleSubmit}
-          disabled={!selectedCharacter || !customName.trim()}
-          className={`px-8 py-3 rounded-lg font-bold transition-colors ${
-            selectedCharacter && customName.trim()
-              ? 'bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600'
-              : 'bg-gray-700 cursor-not-allowed'
-          }`}
-        >
-          Продолжить
-        </button>
-      </div>
+      
+      {!selectedCharacter && (
+        <p className="text-gray-400 text-center">Выберите персонажа, чтобы увидеть подробную информацию</p>
+      )}
     </div>
   );
 };

@@ -1,8 +1,10 @@
-import { motion } from "framer-motion";
-import { LevelSummaryProps } from "../../types/game";
-import Image from "next/image";
+import React from 'react';
+import Image from 'next/image';
+import { motion } from 'framer-motion';
+import { Character } from '../../types/character';
+import { LevelSummaryProps, Skill, LevelReward } from '../../types/game';
 
-export default function LevelSummary({
+export const LevelSummary: React.FC<LevelSummaryProps> = ({
   character,
   levelNumber,
   levelTitle,
@@ -10,7 +12,7 @@ export default function LevelSummary({
   results,
   reward,
   onComplete
-}: LevelSummaryProps) {
+}) => {
   const characterImagePath = `/characters/${character.id}-full.png`;
 
   return (
@@ -22,7 +24,7 @@ export default function LevelSummary({
             <div className="h-[500px] relative flex items-center justify-center">
               <Image 
                 src={characterImagePath}
-                alt={character.name}
+                alt={character.customName || character.displayName}
                 fill
                 style={{ objectFit: 'contain' }}
                 priority
@@ -30,97 +32,65 @@ export default function LevelSummary({
               />
             </div>
             <div className="text-center mt-4">
-              <h2 className="text-2xl font-bold text-white">{character.name}</h2>
+              <h2 className="text-2xl font-bold text-white">{character.customName || character.displayName}</h2>
               <p className="text-lg text-gray-300">Уровень {levelNumber}</p>
             </div>
           </div>
 
           {/* Right Section */}
-          <div className="w-3/5 space-y-8">
-            {/* Skills */}
-            <div className="bg-gray-100 rounded-xl p-8">
-              <h2 className="text-2xl font-bold text-gray-800 mb-6">{levelTitle}</h2>
-              <div className="grid grid-cols-3 gap-6">
-                {skills.map((skill, index) => (
-                  <div key={index} className="bg-white rounded-lg p-6 shadow-sm">
-                    <Image src={skill.icon} alt={skill.name} width={52} height={52} className="mb-3" />
-                    <h3 className="font-bold text-gray-800 mb-1">{skill.name}</h3>
-                    <p className="text-sm text-gray-600">{skill.description}</p>
-                  </div>
-                ))}
+          <div className="w-3/5 space-y-6">
+            <div className="bg-[#1a1f3c] rounded-xl p-8">
+              <h1 className="text-3xl font-bold text-white mb-4">{levelTitle}</h1>
+              
+              {/* Skills */}
+              <div className="mb-8">
+                <h2 className="text-2xl font-semibold text-white mb-4">Полученные навыки</h2>
+                <div className="grid grid-cols-2 gap-4">
+                  {skills.map((skill: Skill, index: number) => (
+                    <div key={index} className="bg-[#2a2f4c] p-4 rounded-lg flex items-start gap-3">
+                      <div className="w-10 h-10 flex-shrink-0 bg-blue-600 rounded-full flex items-center justify-center">
+                        <img src={skill.icon} alt={skill.name} className="w-6 h-6" />
+                      </div>
+                      <div>
+                        <h3 className="font-medium text-white">{skill.name}</h3>
+                        <p className="text-sm text-gray-300">{skill.description}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
-
-            {/* Divider */}
-            <div className="h-px bg-gradient-to-r from-transparent via-gray-600 to-transparent" />
-
-            {/* Results */}
-            <div className="bg-gray-800 rounded-xl p-8">
-              <h2 className="text-2xl font-bold text-white mb-6">Основные итоги</h2>
-              {results}
-            </div>
-
-            {/* Divider */}
-            <div className="h-px bg-gradient-to-r from-transparent via-gray-600 to-transparent" />
-
-            {/* Reward */}
-            {reward && (
-              <div className="bg-gray-800 rounded-xl p-8">
-                <h2 className="text-2xl font-bold text-white mb-6">Награда за уровень</h2>
-                <motion.div 
-                  className="bg-gray-700 rounded-lg p-4 flex items-start gap-4"
-                  initial={{ scale: 0, opacity: 0 }}
-                  animate={{ 
-                    scale: [0, 1.2, 1],
-                    opacity: [0, 1],
-                  }}
-                  transition={{
-                    duration: 0.5,
-                    times: [0, 0.7, 1],
-                    ease: "easeOut"
-                  }}
-                >
-                  <div className="relative w-16 h-16">
-                    <motion.div
-                      className="absolute inset-0 bg-yellow-400 rounded-lg"
-                      initial={{ opacity: 0 }}
-                      animate={{ 
-                        opacity: [0, 0.8, 0],
-                        scale: [1, 1.5, 1.8]
-                      }}
-                      transition={{
-                        duration: 0.8,
-                        times: [0, 0.2, 1],
-                        ease: "easeOut",
-                        repeat: Infinity,
-                        repeatDelay: 2
-                      }}
-                    />
-                    <Image 
-                      src={reward.imagePath} 
-                      alt={reward.name}
-                      fill
-                      style={{ objectFit: 'contain' }}
-                      className="relative z-10"
-                    />
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-white">{reward.name}</h3>
-                    <p className="text-gray-300">{reward.description}</p>
-                  </div>
-                </motion.div>
+              
+              {/* Results */}
+              <div className="mb-8">
+                <h2 className="text-2xl font-semibold text-white mb-4">Результаты</h2>
+                <div className="bg-[#2a2f4c] p-4 rounded-lg">
+                  {results}
+                </div>
               </div>
-            )}
-
-            {/* Complete Button */}
-            <div className="flex justify-end">
+              
+              {/* Reward */}
+              {reward && (
+                <div className="mb-8">
+                  <h2 className="text-2xl font-semibold text-white mb-4">Награда</h2>
+                  <div className="bg-[#2a2f4c] p-4 rounded-lg flex items-center gap-4">
+                    <div className="w-16 h-16 bg-[#3a3f5c] rounded-lg flex items-center justify-center">
+                      <img src={reward.imagePath} alt={reward.name} className="w-12 h-12 object-contain" />
+                    </div>
+                    <div>
+                      <h3 className="font-medium text-white">{reward.name}</h3>
+                      <p className="text-sm text-gray-300">{reward.description}</p>
+                    </div>
+                  </div>
+                </div>
+              )}
+              
               <motion.button
-                onClick={onComplete}
-                className="px-8 py-3 bg-teal-500 hover:bg-teal-600 rounded-lg font-bold text-white"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition-colors"
+                onClick={onComplete}
               >
-                Завершить уровень
+                Продолжить
               </motion.button>
             </div>
           </div>
@@ -128,4 +98,6 @@ export default function LevelSummary({
       </div>
     </div>
   );
-}
+};
+
+export default LevelSummary;

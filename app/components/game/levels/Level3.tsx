@@ -1,7 +1,9 @@
-import { Character, EquippedItems, LevelResult } from '../../../types/game';
+import React from 'react';
+import { Character } from '../../../types/character';
+import { EquippedItems, LevelResult } from '../../../types/game';
 
 interface Level3Props {
-  character: Character;
+  character: Character & { customName: string };
   inventory: EquippedItems;
   onBack: () => void;
   onComplete: (result: LevelResult) => void;
@@ -10,7 +12,6 @@ interface Level3Props {
 export default function Level3({ character, inventory, onBack, onComplete }: Level3Props) {
   const handleComplete = () => {
     onComplete({
-      selectedProduct: null,
       completed: true,
       score: 100,
       analysis: {

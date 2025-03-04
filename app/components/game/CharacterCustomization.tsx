@@ -1,131 +1,96 @@
 'use client';
 
-import { FC, useEffect } from 'react';
-import { motion } from "framer-motion";
-import { useDrag, useDrop } from "react-dnd";
-import { Character, InventoryItem, ItemCategory, DragItem } from '../../types/game';
+import React, { FC, useState } from 'react';
+import { motion } from 'framer-motion';
+import { Character } from '@/types/character';
 
 interface CharacterCustomizationProps {
-  items: Record<ItemCategory, InventoryItem>;
-  selectedCharacter: Character;
-  equippedItems: Record<ItemCategory, InventoryItem | null>;
-  handleEquip: (category: ItemCategory, item: DragItem | null) => void;
-  onComplete: (character: Character) => void;
+  character: Character;
+  onBack: () => void;
+  onComplete: (customName: string) => void;
 }
 
-interface DraggableItemProps {
-  item: InventoryItem;
-  category: ItemCategory;
-}
-
-const DraggableItem: FC<DraggableItemProps> = ({ item, category }) => {
-  const [{ isDragging }, drag] = useDrag(() => ({
-    type: 'ITEM',
-    item: { ...item, type: 'ITEM' },
-    collect: (monitor) => ({
-      isDragging: monitor.isDragging()
-    })
-  }));
-
-  return (
-    <motion.div
-      ref={drag}
-      className={`relative p-2 bg-gray-800 rounded-lg cursor-pointer ${
-        isDragging ? 'opacity-50' : 'opacity-100'
-      }`}
-      whileHover={{ scale: 1.05 }}
-    >
-      <img 
-        src={item.image} 
-        alt={item.title}
-        className="w-20 h-20 object-contain"
-      />
-      <p className="text-sm text-center mt-1">{item.title}</p>
-    </motion.div>
-  );
-};
-
-const CharacterCustomization: FC<CharacterCustomizationProps> = ({
-  items,
-  selectedCharacter,
-  equippedItems,
-  handleEquip,
+const CharacterCustomization: FC<CharacterCustomizationProps> = ({ 
+  character, 
+  onBack,
   onComplete
 }) => {
-  useEffect(() => {
-    console.log('CharacterCustomization received items:', items);
-    console.log('Items keys:', Object.keys(items));
-  }, [items]);
-
-  // Изменяем проверку на более строгую
-  if (!items || typeof items !== 'object' || Object.keys(items).length === 0) {
-    console.error('No items provided to CharacterCustomization', { items });
-    return <div className="p-4 text-red-500">Loading items...</div>;
-  }
-
-  useEffect(() => {
-    console.log('CharacterCustomization mounted with items:', items);
-    console.log('Selected character:', selectedCharacter);
-    console.log('Equipped items:', equippedItems);
-  }, [items, selectedCharacter, equippedItems]);
-
-  const handleUnequip = (category: ItemCategory): void => {
-    handleEquip(category, null);
-  };
-
-  const [, drop] = useDrop<DragItem, void, {}>(() => ({
-    accept: 'ITEM',
-    drop: (item) => {
-      handleEquip(item.category, item);
+  const [customName, setCustomName] = useState('');
+  const [error, setError] = useState('');
+  
+  const handleSubmit = () => {
+    if (!customName.trim()) {
+      setError('Пожалуйста, введите имя персонажа');
+      return;
     }
-  }));
-
-  if (!items || Object.keys(items).length === 0) {
-    console.error('No items provided to CharacterCustomization');
-    return <div>Loading items...</div>;
-  }
-
+    
+    if (customName.length < 3) {
+      setError('Имя должно содержать не менее 3 символов');
+      return;
+    }
+    
+    if (customName.length > 20) {
+      setError('Имя должно содержать не более 20 символов');
+      return;
+    }
+    
+    onComplete(customName);
+  };
+  
   return (
-    <div className="flex justify-between p-8 h-screen" ref={drop}>
-      <div className="w-1/4 space-y-4">
-        <h2 className="text-xl font-bold mb-4">Инвентарь</h2>
-        <div className="grid grid-cols-2 gap-4">
-          {Object.keys(items).map((category) => (
-            <DraggableItem 
-              key={items[category as ItemCategory].id}
-              item={items[category as ItemCategory]}
-              category={category as ItemCategory}
-            />
-          ))}
+    <div className="min-h-screen bg-gray-900 flex flex-col items-center justify-center p-4">
+      <div className="max-w-md w-full bg-gray-800 rounded-xl p-6 shadow-lg">
+        <div className="flex justify-between items-center mb-6">
+          <button
+            className="text-blue-400 hover:text-blue-300 flex items-center"
+            onClick={onBack}
+          >
+            <svg className="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+            Назад
+          </button>
+          
+          <h1 className="text-2xl font-bold text-white">Персонализация</h1>
+          
+          <div className="w-20"></div> {/* Пустой div для выравнивания */}
         </div>
-      </div>
-      
-      <div className="flex-1 relative">
-        <div className="absolute left-1/2 bottom-0 w-full h-full">
-          <img
-            src={selectedCharacter.image}
-            alt={selectedCharacter.name}
-            className="h-full w-auto mx-auto"
+        
+        <div className="flex flex-col items-center mb-6">
+          <img 
+            src={character.icon} 
+            alt={character.displayName} 
+            className="w-24 h-24 object-contain mb-4"
           />
-          {Object.keys(equippedItems).map((category) => {
-            const item = equippedItems[category as ItemCategory];
-            return item ? (
-              <div 
-                key={category}
-                className="absolute transform -translate-x-1/2 cursor-pointer"
-                onClick={() => handleUnequip(category as ItemCategory)}
-              >
-                <motion.img
-                  src={item.image}
-                  alt={item.title}
-                  className="h-full w-auto"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                />
-              </div>
-            ) : null;
-          })}
+          <h2 className="text-xl font-bold text-white">{character.displayName}</h2>
+          <p className="text-gray-400">{character.roleTitle}</p>
         </div>
+        
+        <div className="mb-6">
+          <label className="block text-white font-bold mb-2" htmlFor="customName">
+            Введите имя персонажа:
+          </label>
+          <input
+            id="customName"
+            type="text"
+            className={`w-full bg-gray-700 text-white rounded-lg p-3 ${error ? 'border-2 border-red-500' : 'border border-gray-600'}`}
+            value={customName}
+            onChange={(e) => setCustomName(e.target.value)}
+            placeholder="Введите имя..."
+          />
+          {error && (
+            <p className="text-red-500 mt-1">{error}</p>
+          )}
+        </div>
+        
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition-colors"
+          onClick={handleSubmit}
+        >
+          Продолжить
+        </motion.button>
       </div>
     </div>
   );

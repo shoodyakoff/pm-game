@@ -1,114 +1,169 @@
-import { FC } from 'react';
-import { motion } from 'framer-motion';
-import { GameState } from '../../types/game';
+'use client';
 
-interface Level {
-  id: number;
-  position: string;
-  title: string;
-}
+import React, { FC } from 'react';
+import { motion } from 'framer-motion';
+import { Character } from '@/types/character';
+import { LevelProgress } from '@/types/game';
 
 interface LevelMapProps {
-  levels: Level[];
-  unlockedLevels: number[];
-  characterLevel: number;
-  nickname: string;
-  characterType: string;
-  characterIcon: string;
-  setCurrentLevel: (levelId: number) => void;
-  setStep: (step: GameState['step']) => void;
-  onReset: () => void;
+  character: Character & { customName: string };
+  onLevelSelect: (level: number) => void;
+  onBack: () => void;
+  levelProgress: LevelProgress[];
 }
 
-export const LevelMap: FC<LevelMapProps> = ({
-  levels,
-  unlockedLevels,
-  characterLevel,
-  nickname,
-  characterType,
-  characterIcon,
-  setCurrentLevel,
-  setStep,
-  onReset
-}) => {
-  return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      className="relative w-full h-screen overflow-hidden"
-    >
-      <div className="relative w-full h-screen flex items-center pt-[120px]">
-        {levels.map((level) => (
-          <motion.button
-            key={level.id}
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            transition={{ delay: level.id * 0.2 }}
-            className={`absolute ${level.position} px-6 py-3 font-bold text-white rounded-lg transition-all duration-300
-              ${unlockedLevels.includes(level.id)
-                ? (level.id < Math.max(...unlockedLevels)
-                  ? 'bg-gradient-to-br from-green-500/30 to-green-600/30 border-2 border-green-400 shadow-lg shadow-green-500/20'
-                  : 'bg-gradient-to-br from-blue-500/30 to-purple-500/30 border-2 border-blue-400 shadow-lg shadow-blue-500/20')
-                : 'bg-gray-800/50 border-2 border-gray-700 opacity-50 cursor-not-allowed'
-              }
-              hover:scale-105 hover:shadow-xl hover:shadow-blue-500/20
-              active:scale-95`}
-            disabled={!unlockedLevels.includes(level.id)}
-            onClick={() => {
-              if (unlockedLevels.includes(level.id)) {
-                setCurrentLevel(level.id);
-                setStep('character');
-              }
-            }}
-          >
-            <div className="flex flex-col items-center gap-2">
-              <span className={`text-sm ${
-                unlockedLevels.includes(level.id)
-                  ? 'text-blue-400'
-                  : 'text-gray-500'
-              }`}>
-                {level.id === Math.max(...unlockedLevels) ? 'Текущий' : 
-                 unlockedLevels.includes(level.id) ? 'Пройден' : 'Заблокирован'}
-              </span>
-              <span className="text-xl">{level.title}</span>
-            </div>
-          </motion.button>
-        ))}
-      </div>
-      
-      <div className="absolute top-4 right-4 flex gap-4 h-[100px]">
-        <motion.div 
-          className="bg-gray-800/90 p-4 rounded-lg backdrop-blur-sm flex gap-4 border border-blue-500/20 shadow-lg shadow-blue-500/10 h-full"
-          initial={{ x: 100, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          whileHover={{ scale: 1.02, borderColor: 'rgba(59, 130, 246, 0.5)' }}
-        >
-          <img 
-            src={characterIcon}
-            alt={nickname}
-            className="h-full aspect-square object-cover rounded-lg"
-          />
-          <div className="flex flex-col justify-center">
-            <p className="font-bold text-xl bg-gradient-to-r from-blue-400 to-purple-500 text-transparent bg-clip-text">
-              Уровень: {characterLevel}
-            </p>
-            <p className="text-gray-300">{nickname}</p>
-            <p className="text-sm text-blue-400">{characterType}</p>
-          </div>
-        </motion.div>
+interface LevelData {
+  id: number;
+  title: string;
+  description: string;
+}
 
-        <motion.button
-          onClick={onReset}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          className="h-full px-3 bg-red-500/20 text-red-400 rounded-lg hover:bg-red-500/30 text-sm"
-        >
-          Сбросить прогресс
-        </motion.button>
+const LevelMap: FC<LevelMapProps> = ({ character, onLevelSelect, onBack, levelProgress }) => {
+  // Данные об уровнях
+  const levelsData: LevelData[] = [
+    {
+      id: 1,
+      title: 'Выбор продукта',
+      description: 'Выберите продукт для развития и проанализируйте его потенциал'
+    },
+    {
+      id: 2,
+      title: 'Формирование команды',
+      description: 'Соберите команду для разработки продукта'
+    },
+    {
+      id: 3,
+      title: 'Запуск продукта',
+      description: 'Подготовьте и запустите продукт на рынок'
+    }
+  ];
+
+  // Объединяем данные об уровнях с прогрессом
+  const levels = levelsData.map(levelData => {
+    const progress = levelProgress.find(p => p.id === levelData.id) || {
+      id: levelData.id,
+      isCompleted: false,
+      isAvailable: levelData.id === 1 // По умолчанию доступен только первый уровень
+    };
+    
+    return {
+      ...levelData,
+      ...progress
+    };
+  });
+
+  return (
+    <div className="min-h-screen bg-gray-900 text-white p-8">
+      <div className="max-w-4xl mx-auto">
+        <div className="flex justify-between items-center mb-8">
+          <h1 className="text-3xl font-bold">Карта уровней</h1>
+          <div className="flex items-center">
+            <img 
+              src={character.icon} 
+              alt={character.displayName} 
+              className="w-10 h-10 object-contain mr-3"
+            />
+            <span className="font-medium">{character.customName}</span>
+            <button 
+              onClick={onBack}
+              className="ml-6 bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition-colors"
+            >
+              Назад
+            </button>
+          </div>
+        </div>
+        
+        <div className="bg-gray-800 rounded-xl p-6 mb-8">
+          <div className="flex flex-col space-y-8">
+            {levels.map((level, index) => (
+              <div key={level.id} className="relative">
+                {/* Линия соединения между уровнями */}
+                {index < levels.length - 1 && (
+                  <div 
+                    className={`absolute left-6 top-16 w-1 h-[calc(100%+2rem)] -z-10 ${
+                      level.isCompleted ? 'bg-green-500' : 'bg-gray-600'
+                    }`}
+                  ></div>
+                )}
+                
+                {/* Карточка уровня */}
+                <motion.div 
+                  className={`flex items-start p-4 rounded-lg ${
+                    level.isAvailable 
+                      ? level.isCompleted 
+                        ? 'bg-green-900/30 border border-green-500 cursor-pointer' 
+                        : 'bg-blue-900/30 border border-blue-500 cursor-pointer' 
+                      : 'bg-gray-700/50 border border-gray-600 opacity-70 cursor-not-allowed'
+                  }`}
+                  whileHover={level.isAvailable ? { scale: 1.02 } : {}}
+                  whileTap={level.isAvailable ? { scale: 0.98 } : {}}
+                  onClick={() => level.isAvailable && onLevelSelect(level.id)}
+                >
+                  <div className={`w-12 h-12 rounded-full flex items-center justify-center mr-4 flex-shrink-0 ${
+                    level.isAvailable 
+                      ? level.isCompleted 
+                        ? 'bg-green-500' 
+                        : 'bg-blue-500' 
+                      : 'bg-gray-600'
+                  }`}>
+                    {level.isCompleted ? (
+                      <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                    ) : (
+                      <span className="text-white font-bold">{level.id}</span>
+                    )}
+                  </div>
+                  
+                  <div>
+                    <h2 className="text-xl font-bold mb-1">{level.title}</h2>
+                    <p className="text-gray-300">{level.description}</p>
+                    
+                    {level.isAvailable && !level.isCompleted && (
+                      <motion.button
+                        className="mt-3 bg-blue-600 hover:bg-blue-700 text-white font-medium py-1 px-4 rounded-lg transition-colors"
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onLevelSelect(level.id);
+                        }}
+                      >
+                        Начать
+                      </motion.button>
+                    )}
+                    
+                    {level.isCompleted && (
+                      <motion.button
+                        className="mt-3 bg-green-600 hover:bg-green-700 text-white font-medium py-1 px-4 rounded-lg transition-colors"
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onLevelSelect(level.id);
+                        }}
+                      >
+                        Повторить
+                      </motion.button>
+                    )}
+                    
+                    {!level.isAvailable && (
+                      <div className="mt-3 flex items-center text-gray-400">
+                        <svg className="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                        </svg>
+                        <span>Заблокировано</span>
+                      </div>
+                    )}
+                  </div>
+                </motion.div>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
-    </motion.div>
+    </div>
   );
 };
 
-export default LevelMap; 
+export default LevelMap;

@@ -1,102 +1,120 @@
-export interface Character {
-  id: string;
-  name: string;
-  type: string;
-  icon: string;
-  image: string;
-  description: string;
-  difficulty: string;
-  weapon: string;
-  stats: {
-    impact: number;
-    leadership: number;
-    technical: number;
-  }
+import { ReactNode } from 'react';
+import { Character } from './character';
+import { ItemCategory, InventoryItem, EquippedItems } from './inventory';
+
+export type Character = Character;
+
+// Диалоговые данные
+export interface DialogData {
+  steps: DialogStep[];
 }
 
+// Базовый предмет
 export interface Item {
   image: string;
   title: string;
 }
 
+// Продукт
 export interface Product {
   id: string;
   title: string;
   description: string;
-  image: string; // Добавляем поле для изображения
+  image: string;
   features: string[];
 }
 
+// Данные анализа рынка
 export interface AnalysisData {
   audience: string;
   competitors: string;
 }
 
+// Результат прохождения уровня
 export interface LevelResult {
-  selectedProduct: any;
   completed: boolean;
-  score: number;
-  analysis: any;
+  score?: number;
+  product?: Product;
+  analysis?: AnalysisData;
 }
 
-export interface LevelProgress extends LevelResult {
-  items: InventoryItem[];
+// Прогресс по уровню
+export interface LevelProgress {
+  id: number;
+  isCompleted: boolean;
+  isAvailable: boolean;
 }
 
+// Награда за уровень
 export interface LevelReward {
-  id: string;
-  name: string;
-  description: string;
-  imagePath: string;
+  item?: {
+    id: string;
+    name: string;
+    type: string;
+  };
+  skills?: string[];
+  stats?: {
+    intelligence?: number;
+    charisma?: number;
+    energy?: number;
+    luck?: number;
+  };
 }
 
+// Навык
 export interface Skill {
   icon: string;
   name: string;
   description: string;
 }
 
+// Пропсы для компонента итогов уровня
 export interface LevelSummaryProps {
-  character: Character;
+  character: Character & { customName: string };
   levelNumber: number;
   levelTitle: string;
   skills: Skill[];
-  results: React.ReactNode;
+  results: ReactNode;
   reward?: LevelReward;
   onComplete: () => void;
 }
 
-export type ItemCategory = 'hat' | 'shirt' | 'pants' | 'transport';
-
-export interface InventoryItem {
+// Предмет для перетаскивания
+export interface DragItem {
   id: string;
-  title: string;
-  image: string;
+  type: string;
   category: ItemCategory;
 }
 
-export interface DragItem extends InventoryItem {
-  type: string;
+// Шаг игры
+export type GameStep = 
+  | 'character_selection'
+  | 'character_customization'
+  | 'character_equipment'
+  | 'level_map'
+  | 'level';
+
+// Экипированные предметы
+export interface EquippedItems {
+  head: InventoryItem | null;
+  body: InventoryItem | null;
+  weapon: InventoryItem | null;
+  transport: InventoryItem | null;
 }
 
-export type GameStep = 'selection' | 'map' | 'character' | 'level1' | 'level2' | 'level3';
-
+// Состояние игры
 export interface GameState {
   step: GameStep;
-  character: Character;
+  character: (Character & { customName?: string }) | null;
   inventory: EquippedItems;
-  progress: {
-    level1?: LevelProgress;
-    level2?: LevelProgress;
-    level3?: LevelProgress;
-  };
+  selectedLevel: number | null;
+  levelProgress?: LevelProgress[];
 }
 
-export interface EquippedItems {
-  hat: InventoryItem | null;
-  shirt: InventoryItem | null;
-  pants: InventoryItem | null;
-  transport: InventoryItem | null;
+export interface DialogStep {
+  speaker: string;
+  text: string;
+  avatar?: string;
 }
 
 // ... остальные типы ...

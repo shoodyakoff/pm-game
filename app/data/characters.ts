@@ -1,95 +1,79 @@
-import { Character } from '../types/game';
-import { PMCharacter } from '../components/character/CharacterSelect';
+import { Character } from '@/types/character';
 
 export const characters: Character[] = [
   {
-    id: '1',
-    name: "Product Lead",
-    image: "/characters/product-lead-full.png",
-    icon: "/characters/product-lead-icon.png",
-    description: "Стратег и визионер. Превращает хаос в структурированный план действий.",
-    type: "Стратег",
-    difficulty: "Нормально",
-    weapon: "OKR Dashboard, Roadmap Canvas",
+    id: 'product-lead',
+    type: 'product-lead',
+    displayName: 'Product Lead',
+    roleTitle: 'Product Lead',
+    description: 'Отвечает за продукт и его развитие. Определяет приоритеты задач и формирует видение продукта.',
+    image: '/characters/product-lead-full.png',
+    icon: '/characters/product-lead-icon.png',
+    difficulty: 'Нормально',
     stats: {
-      impact: 90,
-      leadership: 85,
-      technical: 65
-    }
-  },
-  {
-    id: '2',
-    name: "Agile Coach",
-    image: "/characters/agile-coach-full.png",
-    icon: "/characters/agile-coach-icon.png",
-    description: "Мастер Scrum и Kanban. Помогает командам достигать максимальной эффективности.",
-    type: "Поддержка",
-    difficulty: "Сложно",
-    weapon: "Scrum Guide, Agile Manifesto",
-    stats: {
-      impact: 75,
-      leadership: 90,
+      impact: 80,
+      leadership: 70,
       technical: 60
     }
   },
   {
-    id: '3',
-    name: "Growth Hacker",
-    image: "/characters/growth-hacker-full.png",
-    icon: "/characters/growth-hacker-icon.png",
-    description: "Экспериментатор и аналитик. Находит нестандартные пути к росту продукта.",
-    type: "DPS",
-    difficulty: "Экстрим",
-    weapon: "A/B Testing Lab, Analytics Suite",
+    id: 'ux-visionary',
+    type: 'ux-visionary',
+    displayName: 'UX-визионер',
+    roleTitle: 'UX-визионер',
+    description: 'Создает пользовательский опыт, который делает продукт удобным и привлекательным для пользователей.',
+    image: '/characters/ux-visionary-full.png',
+    icon: '/characters/ux-visionary-icon.png',
+    difficulty: 'Сложно',
     stats: {
-      impact: 95,
-      leadership: 65,
+      impact: 70,
+      leadership: 60,
       technical: 80
     }
   },
   {
-    id: '4',
-    name: "UX Visionary",
-    image: "/characters/ux-visionary-full.png",
-    icon: "/characters/ux-visionary-icon.png",
-    description: "Создает магию в интерфейсах. Превращает сложное в простое и элегантное.",
-    type: "Дизайнер",
-    difficulty: "Легко",
-    weapon: "Design System, Prototype Builder",
+    id: 'tech-pm',
+    type: 'tech-pm',
+    displayName: 'Технический PM',
+    roleTitle: 'Технический PM',
+    description: 'Управляет техническими аспектами продукта, обеспечивая его стабильность и масштабируемость.',
+    image: '/characters/tech-pm-full.png',
+    icon: '/characters/tech-pm-icon.png',
+    difficulty: 'Легко',
+    stats: {
+      impact: 60,
+      leadership: 80,
+      technical: 90
+    }
+  },
+  {
+    id: 'growth-hacker',
+    type: 'growth-hacker',
+    displayName: 'Growth Hacker',
+    roleTitle: 'Growth Hacker',
+    description: 'Специалист по быстрому росту продукта. Использует нестандартные подходы для привлечения пользователей.',
+    image: '/characters/growth-hacker-full.png',
+    icon: '/characters/growth-hacker-icon.png',
+    difficulty: 'Сложно',
     stats: {
       impact: 85,
-      leadership: 70,
-      technical: 75
+      leadership: 65,
+      technical: 70
     }
   },
   {
-    id: '5',
-    name: "Tech PM",
-    image: "/characters/tech-pm-full.png",
-    icon: "/characters/tech-pm-icon.png",
-    description: "Мост между бизнесом и разработкой. Говорит на языках обоих миров.",
-    type: "Гибрид",
-    difficulty: "Сложно",
-    weapon: "Architecture Diagram, API Specs",
+    id: 'agile-coach',
+    type: 'agile-coach',
+    displayName: 'Agile Coach',
+    roleTitle: 'Agile Coach',
+    description: 'Помогает команде эффективно работать по гибким методологиям. Фасилитирует процессы и устраняет препятствия.',
+    image: '/characters/agile-coach-full.png',
+    icon: '/characters/agile-coach-icon.png',
+    difficulty: 'Нормально',
     stats: {
-      impact: 80,
-      leadership: 75,
-      technical: 95
+      impact: 75,
+      leadership: 90,
+      technical: 55
     }
   }
-];
-
-export const PM_CHARACTERS: PMCharacter[] = [
-  {
-    id: 'po',
-    type: 'Product Owner',
-    name: 'Product Owner',
-    stats: {
-      technical: 60,
-      soft: 80,
-      leadership: 85,
-      analytics: 70
-    }
-  },
-  // Остальные типы PM...
 ];

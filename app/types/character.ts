@@ -1,9 +1,22 @@
-export interface Character {
-  id: string;
-  type: string;
-  baseImage: string;  // Базовое изображение (без прически)
-  hairImage: string;  // Изображение прически
-  // ... другие поля
+import { ItemCategory } from './inventory';
+
+export type Difficulty = "Легко" | "Нормально" | "Сложно";
+
+export interface CharacterStats {
+  impact: number;    // Влияние на бизнес
+  leadership: number; // Лидерские качества
+  technical: number;  // Технические навыки
 }
 
-export type ItemCategory = 'hat' | 'armor' | 'weapon' | 'transport'; 
+export interface Character {
+  id: string;
+  displayName: string;
+  roleTitle: string;
+  image: string;
+  icon: string;
+  type: 'product-lead' | 'ux-visionary' | 'tech-pm' | 'growth-hacker' | 'agile-coach';
+  level?: number;
+  description?: string;
+  difficulty?: Difficulty;
+  stats?: CharacterStats;
+} 

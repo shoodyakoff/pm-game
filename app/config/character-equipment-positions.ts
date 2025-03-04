@@ -4,60 +4,152 @@ interface EquipmentOffset {
   top: string;    // % от высоты персонажа
   left: string;   // % от ширины персонажа
   scale: number;  // масштаб предмета
-  zIndex: number;  // Добавим z-index для контроля слоев
+  zIndex: number; // z-index для контроля слоев
 }
 
-export const CHARACTER_EQUIPMENT_POSITIONS: Record<string, Record<ItemCategory, EquipmentOffset>> = {
-  'tech-pm': {
-    hat: {
-      top: '-10%',    // Выше головы
-      left: '50%',    // По центру
-      scale: 1,
-      zIndex: 3  // Шлем поверх всего
-    },
-    armor: {
-      top: '0%',
-      left: '50%',
-      scale: 1,
-      zIndex: 2
-    },
-    weapon: {
-      top: '20%',
-      left: '80%',
-      scale: 1,
-      zIndex: 4
-    },
-    transport: {
-      top: '50%',
-      left: '20%',
-      scale: 1,
-      zIndex: 1
-    }
-  },
+// Позиции экипировки для разных типов персонажей
+type CharacterEquipmentPositions = Record<string, Record<ItemCategory, EquipmentOffset>>;
+
+const characterEquipmentPositions: CharacterEquipmentPositions = {
+  // Позиции для Product Lead
   'product-lead': {
     hat: {
-      top: '-5%',     // Немного выше головы
-      left: '50%',    // По центру
-      scale: 0.9,      // Чуть меньше масштаб
+      top: '-10%',
+      left: '50%',
+      scale: 0.8,
       zIndex: 3
     },
     armor: {
-      top: '0%',
+      top: '20%',
       left: '50%',
       scale: 1,
       zIndex: 2
     },
     weapon: {
-      top: '20%',
+      top: '30%',
       left: '80%',
-      scale: 1,
+      scale: 0.9,
       zIndex: 4
     },
     transport: {
-      top: '50%',
+      top: '70%',
       left: '20%',
+      scale: 1.2,
+      zIndex: 1
+    }
+  },
+  
+  // Позиции для UX-визионера
+  'ux-visionary': {
+    hat: {
+      top: '-10%',
+      left: '50%',
+      scale: 0.8,
+      zIndex: 3
+    },
+    armor: {
+      top: '20%',
+      left: '50%',
       scale: 1,
+      zIndex: 2
+    },
+    weapon: {
+      top: '30%',
+      left: '80%',
+      scale: 0.9,
+      zIndex: 4
+    },
+    transport: {
+      top: '70%',
+      left: '20%',
+      scale: 1.2,
+      zIndex: 1
+    }
+  },
+  
+  // Позиции для Tech PM
+  'tech-pm': {
+    hat: {
+      top: '-10%',
+      left: '50%',
+      scale: 0.8,
+      zIndex: 3
+    },
+    armor: {
+      top: '20%',
+      left: '50%',
+      scale: 1,
+      zIndex: 2
+    },
+    weapon: {
+      top: '30%',
+      left: '80%',
+      scale: 0.9,
+      zIndex: 4
+    },
+    transport: {
+      top: '70%',
+      left: '20%',
+      scale: 1.2,
+      zIndex: 1
+    }
+  },
+  
+  // Позиции для Growth Hacker
+  'growth-hacker': {
+    hat: {
+      top: '-10%',
+      left: '50%',
+      scale: 0.8,
+      zIndex: 3
+    },
+    armor: {
+      top: '20%',
+      left: '50%',
+      scale: 1,
+      zIndex: 2
+    },
+    weapon: {
+      top: '30%',
+      left: '80%',
+      scale: 0.9,
+      zIndex: 4
+    },
+    transport: {
+      top: '70%',
+      left: '20%',
+      scale: 1.2,
+      zIndex: 1
+    }
+  },
+  
+  // Позиции для Agile Coach
+  'agile-coach': {
+    hat: {
+      top: '-10%',
+      left: '50%',
+      scale: 0.8,
+      zIndex: 3
+    },
+    armor: {
+      top: '20%',
+      left: '50%',
+      scale: 1,
+      zIndex: 2
+    },
+    weapon: {
+      top: '30%',
+      left: '80%',
+      scale: 0.9,
+      zIndex: 4
+    },
+    transport: {
+      top: '70%',
+      left: '20%',
+      scale: 1.2,
       zIndex: 1
     }
   }
-}; 
+};
+
+export default characterEquipmentPositions; 

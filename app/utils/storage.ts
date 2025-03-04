@@ -1,18 +1,15 @@
 import { apiService } from '../services/apiService';
 import { GameState } from '../types/game';
 
-export const ensureFullImage = (imagePath: string) => {
-  if (!imagePath) return imagePath;
-  
-  // Сначала получаем базовый путь без расширения
-  const base = imagePath.split('.')[0].replace(/-full/g, '');
-  
-  // Затем добавляем -full и расширение
-  return `${base}-full.png`;
+export const ensureFullImage = (image: string): string => {
+  if (image.startsWith('http')) {
+    return image;
+  }
+  return image;
 };
 
 export const saveGameState = (state: GameState) => {
-  try {
+  if (typeof window !== 'undefined') {
     const stateToSave = {
       ...state,
       character: state.character ? {
@@ -21,12 +18,14 @@ export const saveGameState = (state: GameState) => {
       } : null
     };
     localStorage.setItem('gameState', JSON.stringify(stateToSave));
-  } catch (error) {
-    // Тихая обработка ошибки
   }
 };
 
 export const loadGameState = (): GameState | null => {
+  if (typeof window === 'undefined') {
+    return null;
+  }
+  
   const saved = localStorage.getItem('gameState');
   if (!saved) return null;
   

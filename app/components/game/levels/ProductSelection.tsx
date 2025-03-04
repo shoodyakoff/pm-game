@@ -1,108 +1,63 @@
-import { motion } from "framer-motion"; // Удалим неиспользуемый HTMLMotionProps
-import { useState } from "react";
-import { products } from "../../../data/products"; // Next.js автоматически разрешит .ts расширение
-import { Product, Character } from "../../../types/game";
-import { DialogData } from "../../../types/dialog";
-import DialogScene from "../dialogs/DialogScene";
+import React, { FC } from 'react';
+import { motion } from 'framer-motion';
+import { Product } from '@/types/game';
+import { products } from '@/data/products';
 
 interface ProductSelectionProps {
-  onSelect: (product: Product) => void;
-  selectedCharacter: Character;
+  onBack: () => void;
+  onProductSelected: (product: Product) => void;
 }
 
-const mobileMarketDialogue: DialogData = {
-  speakers: [
-    { 
-      id: "ceo", 
-      icon: "/characters/ceo_icon.png",
-      position: "left"  // добавляем позицию для CEO
-    },
-    { 
-      id: "pm", 
-      icon: (characterImage: string) => characterImage,
-      position: "right"  // добавляем позицию для PM
-    }
-  ],
-  messages: [
-    {
-      speaker: "ceo",
-      text: [
-        "Наша компания фокусируется на рынке мобильных приложений.",
-        "Мы видим огромный потенциал в этом направлении, так как количество пользователей мобильных устройств растет с каждым днем.",
-        "Давай рассмотрим каждую идею подробнее."
-      ]
-    }
-  ]
-};
-
-export default function ProductSelection({ onSelect, selectedCharacter }: ProductSelectionProps) {
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-
+const ProductSelection: FC<ProductSelectionProps> = ({ onBack, onProductSelected }) => {
   return (
-    <div className="min-h-screen">
-      <div className="max-w-6xl mx-auto p-8">
-        <div className="mb-8">
-          <DialogScene
-            dialogue={mobileMarketDialogue}
-            selectedCharacter={selectedCharacter}
-            onComplete={() => {}}
-            showControls={false}
-          />
-        </div>
-
-        <div>
-          <h1 className="text-3xl font-bold mb-8 text-white">
-            Выберите продукт для развития
-          </h1>
-          
-          <div className="grid grid-cols-3 gap-8">
-            {products.map((product) => (
-              <motion.div
-                key={product.id}
-                className={`p-6 rounded-xl cursor-pointer transition-all
-                  ${selectedProduct?.id === product.id 
-                    ? 'bg-teal-600/20 ring-2 ring-teal-500' 
-                    : 'bg-gray-800/30 hover:bg-gray-700/30'}`}
-                onClick={() => setSelectedProduct(product)}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                <div className="mb-4 relative h-[300px]">
-                  <img
-                    src={product.image}
-                    alt={product.title}
-                    className="w-full h-full object-cover rounded-lg"
-                  />
-                </div>
-                <h2 className="text-xl font-bold mb-3 text-white">
-                  {product.title}
-                </h2>
-                <p className="text-gray-300 mb-4">
-                  {product.description}
-                </p>
-                <ul className="space-y-2">
-                  {product.features.map((feature, index) => (
-                    <li key={index} className="text-sm text-gray-400">
-                      • {feature}
-                    </li>
-                  ))}
-                </ul>
-              </motion.div>
-            ))}
-          </div>
-
-          <motion.button
-            className="mt-8 px-8 py-3 bg-teal-500 hover:bg-teal-600 rounded-lg font-bold 
-              disabled:opacity-50 disabled:cursor-not-allowed mx-auto block text-white"
-            onClick={() => selectedProduct && onSelect(selectedProduct)}
-            disabled={!selectedProduct}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+    <div className="min-h-screen bg-gray-900 flex flex-col p-4">
+      <div className="max-w-4xl mx-auto w-full bg-gray-800 rounded-xl p-6 shadow-lg">
+        <div className="flex justify-between items-center mb-6">
+          <button
+            className="text-blue-400 hover:text-blue-300 flex items-center"
+            onClick={onBack}
           >
-            Выбрать продукт
-          </motion.button>
+            <svg className="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+            Назад
+          </button>
+          
+          <h1 className="text-2xl font-bold text-white">Выбор продукта</h1>
+          
+          <div className="w-20"></div> {/* Пустой div для выравнивания */}
+        </div>
+        
+        <p className="text-gray-300 mb-6">
+          Выберите продукт, который вы хотите проанализировать и развивать:
+        </p>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {products.map((product) => (
+            <motion.div
+              key={product.id}
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.98 }}
+              className="bg-gray-700 rounded-lg p-4 cursor-pointer hover:bg-gray-600 transition-colors"
+              onClick={() => onProductSelected(product)}
+            >
+              <div className="flex items-center">
+                <img 
+                  src={product.image} 
+                  alt={product.title} 
+                  className="w-16 h-16 object-cover rounded-lg mr-4"
+                />
+                <div>
+                  <h2 className="text-xl font-bold text-blue-400">{product.title}</h2>
+                  <p className="text-gray-300">{product.description}</p>
+                </div>
+              </div>
+            </motion.div>
+          ))}
         </div>
       </div>
     </div>
   );
-}
+};
+
+export default ProductSelection;

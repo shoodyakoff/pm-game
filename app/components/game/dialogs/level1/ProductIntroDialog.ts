@@ -1,34 +1,19 @@
-import { DialogData } from "../../../../types/dialog";
+import { DialogData } from '@/types/game';
 
-export const productIntroDialogue: DialogData = {
-  speakers: [
+// Диалог для введения в выбор продукта
+const ProductIntroDialog: DialogData = {
+  steps: [
     {
-      id: "ceo",
-      icon: "/assets/characters/ceo_icon.png",
-      position: "left"
+      speaker: 'CEO',
+      text: 'Добро пожаловать в нашу компанию! Нам нужен опытный Product Manager, который поможет выбрать правильный продукт для разработки.',
+      avatar: '/characters/ceo_icon.png'
     },
     {
-      id: "pm",
-      icon: (characterImage: string) => characterImage.replace('.png', '_icon.png'),
-      position: "right"
-    }
-  ],
-  messages: [
-    {
-      speaker: "ceo",
-      text: [
-        "Привет! Рад видеть тебя в нашей команде в роли Product Manager!",
-        "У нас сейчас отличная ситуация - есть инвестиции и несколько перспективных идей для развития.",
-        "Твоя первая задача - выбрать направление, в котором мы будем развиваться. Оцени каждую идею и подготовь обоснование."
-      ]
-    },
-    {
-      speaker: "pm",
-      text: [
-        "Здравствуйте! Спасибо за доверие.",
-        "Я изучу все предложенные идеи и проанализирую их потенциал.",
-        "Подготовлю детальный анализ каждого направления."
-      ]
+      speaker: 'PM',
+      text: 'Спасибо за доверие! Я готов проанализировать рынок и подготовить рекомендации.',
+      avatar: 'character_icon'
     }
   ]
 };
+
+export default ProductIntroDialog;

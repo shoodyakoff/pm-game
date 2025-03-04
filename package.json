@@ -4,11 +4,11 @@
   "private": true,
   "scripts": {
     "predev": "node scripts/clear-port.js",
-    "dev": "next dev -p 3000",
+    "dev": "next dev",
     "build": "next build",
-    "start": "next start -p 3000",
+    "start": "next start",
     "lint": "next lint",
-    "test": "echo \"Tests temporarily disabled\"",
+    "test": "echo 'Tests are disabled' && exit 0",
     "test:watch": "jest --watch",
     "parse-excel": "node scripts/parse-excel.js"
   },
