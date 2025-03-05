@@ -5,12 +5,11 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { DndProvider, useDrag, useDrop } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { Character } from '@/types/character';
-import { InventoryItem, ItemCategory } from '@/types/inventory';
-import { EquippedItems } from '@/types/game';
-import { validateEquipment, calculateStats } from './equipment-logic';
+import { InventoryItem, ItemCategory, EquippedItems } from '@/types/inventory';
 import characterEquipmentPositions from '../../config/character-equipment-positions';
 import { DraggableItem } from './DraggableItem';
 import { items } from '@/data/items';
+import { validateEquipment, calculateStats } from './equipment-logic';
 
 // Создаем простой эмиттер событий для тестов
 class TestEventEmitter {
@@ -55,11 +54,10 @@ const getTestEventEmitter = (): TestEventEmitter => {
 
 interface CharacterEquipmentProps {
   character: Character & { customName: string };
+  inventory: EquippedItems;
   onComplete: (equippedItems: EquippedItems) => void;
   onBack: () => void;
-  onContinue: () => void;
-  onChangeCharacter: () => void;
-  unlockedSlots?: number; // Количество разблокированных слотов (по умолчанию 2)
+  selectedLevel?: string | null;
 }
 
 // Компонент для отображения экипировки на персонаже
@@ -160,19 +158,12 @@ const DropZone: FC<DropZoneProps> = ({ type, onDrop, children, isUnlocked }) => 
 
 const CharacterEquipment: FC<CharacterEquipmentProps> = ({
   character,
+  inventory,
   onComplete,
   onBack,
-  onContinue,
-  onChangeCharacter,
-  unlockedSlots = 2
+  selectedLevel
 }) => {
-  // Состояние для экипированных предметов
-  const [equippedItems, setEquippedItems] = useState<EquippedItems>({
-    head: null,
-    body: null,
-    weapon: null,
-    transport: null
-  });
+  const [equippedItems, setEquippedItems] = useState<EquippedItems>(inventory);
   
   // Состояние для статистики персонажа
   const [stats, setStats] = useState({
@@ -224,40 +215,14 @@ const CharacterEquipment: FC<CharacterEquipmentProps> = ({
   
   // Проверка, разблокирован ли слот
   const isSlotUnlocked = (slotIndex: number) => {
-    return slotIndex < unlockedSlots;
-  };
-  
-  // Функция для завершения экипировки
-  const handleComplete = () => {
-    onComplete(equippedItems);
+    return slotIndex < 4;
   };
   
   return (
-    <div className="min-h-screen bg-gray-900 text-white p-8">
-      <div className="max-w-6xl mx-auto">
+    <div className="min-h-screen bg-gray-900 flex flex-col p-4">
+      <div className="max-w-6xl mx-auto w-full bg-gray-800 rounded-xl p-6 shadow-lg">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold">Экипировка персонажа</h1>
-          <div className="flex space-x-4">
-            <button 
-              onClick={onBack}
-              className="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition-colors"
-            >
-              Назад
-            </button>
-            <motion.button
-              whileHover={isValid ? { scale: 1.05 } : {}}
-              whileTap={isValid ? { scale: 0.95 } : {}}
-              className={`font-bold py-2 px-4 rounded-lg transition-colors ${
-                isValid 
-                  ? 'bg-blue-600 hover:bg-blue-700 text-white' 
-                  : 'bg-gray-600 text-gray-400 cursor-not-allowed'
-              }`}
-              onClick={isValid ? onContinue : undefined}
-              disabled={!isValid}
-            >
-              Продолжить
-            </motion.button>
-          </div>
         </div>
         
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -453,6 +418,24 @@ const CharacterEquipment: FC<CharacterEquipmentProps> = ({
               ))}
             </div>
           </div>
+        </div>
+        
+        <div className="flex justify-between mt-8">
+          <button
+            className="bg-gray-700 hover:bg-gray-600 text-white font-bold py-3 px-6 rounded-lg transition-colors"
+            onClick={onBack}
+          >
+            Назад
+          </button>
+          
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition-colors"
+            onClick={() => onComplete(equippedItems)}
+          >
+            {selectedLevel ? 'Начать уровень' : 'Сохранить'}
+          </motion.button>
         </div>
       </div>
     </div>

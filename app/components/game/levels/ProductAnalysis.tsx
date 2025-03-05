@@ -6,20 +6,21 @@ import { Product, AnalysisData } from '@/types/game';
 interface ProductAnalysisProps {
   character: Character & { customName: string };
   product: Product;
-  analysisData: AnalysisData;
-  onAnalysisChange: (data: AnalysisData) => void;
   onBack: () => void;
-  onComplete: () => void;
+  onComplete: (data: AnalysisData) => void;
 }
 
 const ProductAnalysis: FC<ProductAnalysisProps> = ({
   character,
   product,
-  analysisData,
-  onAnalysisChange,
   onBack,
   onComplete
 }) => {
+  const [analysisData, setAnalysisData] = useState<AnalysisData>({
+    audience: '',
+    competitors: ''
+  });
+  
   const [errors, setErrors] = useState<{
     audience?: string;
     competitors?: string;
@@ -42,7 +43,7 @@ const ProductAnalysis: FC<ProductAnalysisProps> = ({
     setErrors(newErrors);
 
     if (Object.keys(newErrors).length === 0) {
-      onComplete();
+      onComplete(analysisData);
     }
   };
 
@@ -88,7 +89,7 @@ const ProductAnalysis: FC<ProductAnalysisProps> = ({
               className={`w-full bg-gray-700 text-white rounded-lg p-3 min-h-[100px] ${errors.audience ? 'border-2 border-red-500' : 'border border-gray-600'}`}
               placeholder="Опишите целевую аудиторию продукта..."
               value={analysisData.audience}
-              onChange={(e) => onAnalysisChange({ ...analysisData, audience: e.target.value })}
+              onChange={(e) => setAnalysisData({ ...analysisData, audience: e.target.value })}
             />
             {errors.audience && (
               <p className="text-red-500 mt-1">{errors.audience}</p>
@@ -103,7 +104,7 @@ const ProductAnalysis: FC<ProductAnalysisProps> = ({
               className={`w-full bg-gray-700 text-white rounded-lg p-3 min-h-[100px] ${errors.competitors ? 'border-2 border-red-500' : 'border border-gray-600'}`}
               placeholder="Опишите основных конкурентов и их решения..."
               value={analysisData.competitors}
-              onChange={(e) => onAnalysisChange({ ...analysisData, competitors: e.target.value })}
+              onChange={(e) => setAnalysisData({ ...analysisData, competitors: e.target.value })}
             />
             {errors.competitors && (
               <p className="text-red-500 mt-1">{errors.competitors}</p>

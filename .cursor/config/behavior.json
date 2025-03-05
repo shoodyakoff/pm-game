@@ -9,5 +9,12 @@
     "preferredStack": ["TypeScript", "React", "Next.js"],
     "codeStyle": "clean and documented",
     "testDriven": true
+  },
+  "controlledDevelopment": {
+    "phaseApproval": true,
+    "strictRequirements": true,
+    "versionControl": true,
+    "enhancedCommunication": true,
+    "structuredApproach": true
   }
 } 

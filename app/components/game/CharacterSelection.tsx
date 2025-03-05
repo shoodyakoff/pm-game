@@ -6,10 +6,10 @@ import { Character } from '@/types/character';
 import { characters } from '@/data/characters';
 
 interface CharacterSelectionProps {
-  onCharacterSelect: (character: Character) => void;
+  onSelect: (character: Character & { customName: string }) => void;
 }
 
-const CharacterSelection: FC<CharacterSelectionProps> = ({ onCharacterSelect }) => {
+const CharacterSelection: FC<CharacterSelectionProps> = ({ onSelect }) => {
   const [selectedCharacter, setSelectedCharacter] = useState<Character | null>(null);
 
   const handleCharacterClick = (character: Character) => {
@@ -18,7 +18,7 @@ const CharacterSelection: FC<CharacterSelectionProps> = ({ onCharacterSelect }) 
 
   const handleSelectButtonClick = () => {
     if (selectedCharacter) {
-      onCharacterSelect(selectedCharacter);
+      onSelect({ ...selectedCharacter, customName: selectedCharacter.displayName });
     }
   };
 

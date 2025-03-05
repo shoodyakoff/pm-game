@@ -1,6 +1,7 @@
 ---
 description: Main rules for AI assistance and development workflow
 globs: **/*.{md,ts,tsx}
+alwaysApply: false
 ---
 
 # Основные правила работы с AI

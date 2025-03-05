@@ -1,6 +1,7 @@
 import React from 'react';
 import { Character } from '../../../types/character';
-import { EquippedItems, LevelResult } from '../../../types/game';
+import { LevelResult } from '../../../types/game';
+import { EquippedItems } from '../../../types/inventory';
 
 interface Level3Props {
   character: Character & { customName: string };

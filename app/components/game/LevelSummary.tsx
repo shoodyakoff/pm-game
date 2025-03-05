@@ -4,9 +4,19 @@ import { motion } from 'framer-motion';
 import { Character } from '../../types/character';
 import { LevelSummaryProps, Skill, LevelReward } from '../../types/game';
 
+const achievementIcons = {
+  'market-analysis': '/icons/target.png',
+  'decision-making': '/icons/strategy.png',
+  'competitor-analysis': '/icons/competition.png',
+};
+
+const rewardIcon = {
+  'analytics-mace': '/items/weapon/mace_analyst.png',
+};
+
 export const LevelSummary: React.FC<LevelSummaryProps> = ({
   character,
-  levelNumber,
+  levelName,
   levelTitle,
   skills,
   results,
@@ -33,7 +43,7 @@ export const LevelSummary: React.FC<LevelSummaryProps> = ({
             </div>
             <div className="text-center mt-4">
               <h2 className="text-2xl font-bold text-white">{character.customName || character.displayName}</h2>
-              <p className="text-lg text-gray-300">Уровень {levelNumber}</p>
+              <p className="text-lg text-gray-300">{levelName}</p>
             </div>
           </div>
 
@@ -69,16 +79,20 @@ export const LevelSummary: React.FC<LevelSummaryProps> = ({
               </div>
               
               {/* Reward */}
-              {reward && (
+              {reward && reward.item && (
                 <div className="mb-8">
                   <h2 className="text-2xl font-semibold text-white mb-4">Награда</h2>
                   <div className="bg-[#2a2f4c] p-4 rounded-lg flex items-center gap-4">
                     <div className="w-16 h-16 bg-[#3a3f5c] rounded-lg flex items-center justify-center">
-                      <img src={reward.imagePath} alt={reward.name} className="w-12 h-12 object-contain" />
+                      <img 
+                        src={rewardIcon[reward.item.id as keyof typeof rewardIcon]} 
+                        alt={reward.item.name} 
+                        className="w-12 h-12 object-contain" 
+                      />
                     </div>
                     <div>
-                      <h3 className="font-medium text-white">{reward.name}</h3>
-                      <p className="text-sm text-gray-300">{reward.description}</p>
+                      <h3 className="font-medium text-white">{reward.item.name}</h3>
+                      <p className="text-sm text-gray-300">Новый предмет добавлен в ваш инвентарь!</p>
                     </div>
                   </div>
                 </div>

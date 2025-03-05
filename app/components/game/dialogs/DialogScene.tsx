@@ -4,27 +4,25 @@ import { Character } from '@/types/character';
 import { DialogData } from '@/types/game';
 
 interface DialogSceneProps {
-  dialogue: DialogData;
-  selectedCharacter: Character & { customName: string };
+  dialog: DialogData;
   onComplete: () => void;
   showControls?: boolean;
 }
 
 const DialogScene: React.FC<DialogSceneProps> = ({
-  dialogue,
-  selectedCharacter,
+  dialog,
   onComplete,
   showControls = true
 }) => {
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
-  const [displayedTexts, setDisplayedTexts] = useState<string[]>(Array(dialogue.steps.length).fill(''));
-  const [isTypingComplete, setIsTypingComplete] = useState<boolean[]>(Array(dialogue.steps.length).fill(false));
+  const [displayedTexts, setDisplayedTexts] = useState<string[]>(Array(dialog.steps.length).fill(''));
+  const [isTypingComplete, setIsTypingComplete] = useState<boolean[]>(Array(dialog.steps.length).fill(false));
   
   // Эффект для анимации печатания текста для текущего шага
   useEffect(() => {
-    if (currentStepIndex >= dialogue.steps.length) return;
+    if (currentStepIndex >= dialog.steps.length) return;
     
-    const text = dialogue.steps[currentStepIndex].text;
+    const text = dialog.steps[currentStepIndex].text;
     let index = 0;
     setDisplayedTexts(prev => {
       const newTexts = [...prev];
@@ -58,10 +56,10 @@ const DialogScene: React.FC<DialogSceneProps> = ({
     }, 30);
     
     return () => clearInterval(typingInterval);
-  }, [currentStepIndex, dialogue.steps]);
+  }, [currentStepIndex, dialog.steps]);
   
   // Проверяем, завершен ли весь диалог
-  const isAllTypingComplete = isTypingComplete[dialogue.steps.length - 1];
+  const isAllTypingComplete = isTypingComplete[dialog.steps.length - 1];
   
   // Обработчик для завершения диалога
   const handleComplete = () => {
@@ -72,7 +70,7 @@ const DialogScene: React.FC<DialogSceneProps> = ({
     <div className="min-h-screen bg-gray-900 flex items-center justify-center p-4">
       <div className="max-w-4xl w-full bg-gray-800 rounded-xl p-6 shadow-lg">
         <div className="space-y-6">
-          {dialogue.steps.map((step, index) => {
+          {dialog.steps.map((step, index) => {
             // Показываем только текущий и предыдущие шаги
             if (index > currentStepIndex) return null;
             
@@ -81,13 +79,8 @@ const DialogScene: React.FC<DialogSceneProps> = ({
             // Определяем аватар для текущего шага
             let avatarSrc = step.avatar || '';
             
-            // Если аватар указан как 'character_icon', используем иконку выбранного персонажа
-            if (avatarSrc === 'character_icon') {
-              avatarSrc = selectedCharacter.icon;
-            }
-            
             // Определяем имя говорящего
-            const speakerName = isSpeakerCharacter ? selectedCharacter.customName : step.speaker;
+            const speakerName = step.speaker;
             
             return (
               <div 

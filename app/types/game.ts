@@ -1,8 +1,6 @@
 import { ReactNode } from 'react';
-import { Character } from './character';
-import { ItemCategory, InventoryItem, EquippedItems } from './inventory';
-
-export type Character = Character;
+import { Character as CharacterType } from './character';
+import { ItemCategory, InventoryItem, EquippedItems as EquippedItemsType } from './inventory';
 
 // Диалоговые данные
 export interface DialogData {
@@ -38,11 +36,14 @@ export interface LevelResult {
   analysis?: AnalysisData;
 }
 
-// Прогресс по уровню
+// Статус уровня
+export type LevelStatus = 'locked' | 'available' | 'completed';
+
+// Прогресс по уровням
 export interface LevelProgress {
-  id: number;
-  isCompleted: boolean;
-  isAvailable: boolean;
+  level1: LevelStatus;
+  level2: LevelStatus;
+  level3: LevelStatus;
 }
 
 // Награда за уровень
@@ -70,8 +71,8 @@ export interface Skill {
 
 // Пропсы для компонента итогов уровня
 export interface LevelSummaryProps {
-  character: Character & { customName: string };
-  levelNumber: number;
+  character: CharacterType & { customName: string };
+  levelName: string;
   levelTitle: string;
   skills: Skill[];
   results: ReactNode;
@@ -86,7 +87,17 @@ export interface DragItem {
   category: ItemCategory;
 }
 
-// Шаг игры
+// Экран игры (новая последовательность)
+export type GameScreen = 
+  | 'character-selection'
+  | 'character-customization'
+  | 'level-map'
+  | 'character-equipment'
+  | 'level1'
+  | 'level2'
+  | 'level3';
+
+// Шаг игры (устаревший тип, оставлен для обратной совместимости)
 export type GameStep = 
   | 'character_selection'
   | 'character_customization'
@@ -94,21 +105,17 @@ export type GameStep =
   | 'level_map'
   | 'level';
 
-// Экипированные предметы
-export interface EquippedItems {
-  head: InventoryItem | null;
-  body: InventoryItem | null;
-  weapon: InventoryItem | null;
-  transport: InventoryItem | null;
-}
-
 // Состояние игры
 export interface GameState {
-  step: GameStep;
-  character: (Character & { customName?: string }) | null;
-  inventory: EquippedItems;
-  selectedLevel: number | null;
-  levelProgress?: LevelProgress[];
+  screen: GameScreen;
+  step?: GameStep; // Устаревшее поле, оставлено для обратной совместимости
+  selectedCharacter: CharacterType | null;
+  customCharacter: CharacterType | null;
+  character?: (CharacterType & { customName?: string }) | null; // Устаревшее поле, оставлено для обратной совместимости
+  equippedItems: EquippedItemsType;
+  inventory?: EquippedItemsType; // Устаревшее поле, оставлено для обратной совместимости
+  selectedLevel: string | null;
+  levelProgress: LevelProgress;
 }
 
 export interface DialogStep {

@@ -1,14 +1,16 @@
 import React, { FC } from 'react';
 import { motion } from 'framer-motion';
+import { Character } from '@/types/character';
 import { Product } from '@/types/game';
 import { products } from '@/data/products';
 
 interface ProductSelectionProps {
+  character: Character & { customName: string };
   onBack: () => void;
-  onProductSelected: (product: Product) => void;
+  onSelect: (product: Product) => void;
 }
 
-const ProductSelection: FC<ProductSelectionProps> = ({ onBack, onProductSelected }) => {
+const ProductSelection: FC<ProductSelectionProps> = ({ character, onBack, onSelect }) => {
   return (
     <div className="min-h-screen bg-gray-900 flex flex-col p-4">
       <div className="max-w-4xl mx-auto w-full bg-gray-800 rounded-xl p-6 shadow-lg">
@@ -29,7 +31,7 @@ const ProductSelection: FC<ProductSelectionProps> = ({ onBack, onProductSelected
         </div>
         
         <p className="text-gray-300 mb-6">
-          Выберите продукт, который вы хотите проанализировать и развивать:
+          {character.customName}, выберите продукт, который вы хотите проанализировать и развивать:
         </p>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -39,7 +41,7 @@ const ProductSelection: FC<ProductSelectionProps> = ({ onBack, onProductSelected
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.98 }}
               className="bg-gray-700 rounded-lg p-4 cursor-pointer hover:bg-gray-600 transition-colors"
-              onClick={() => onProductSelected(product)}
+              onClick={() => onSelect(product)}
             >
               <div className="flex items-center">
                 <img 
